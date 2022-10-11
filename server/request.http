@@ -1,0 +1,94 @@
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+    "username":"ljisoo",
+    "email":"linh194093@gmail.com",
+    "password": "Linh@101201"
+}
+
+###
+POST http://localhost:5000/api/auth/verify/633a72e5af7d692af5de29e7/ce3812d5-a6f1-42b7-82d4-d28b59ea5381633a72e5af7d692af5de29e7
+Content-Type: application/json
+
+###
+
+POST http://localhost:5000/api/auth/identify
+Content-Type: application/json
+
+{
+    "email":"buikhacdat1@gmail.com"
+}
+
+###
+
+POST http://localhost:5000/api/auth/resetpassword/631e056c510e9764d6a0a8f8/2decf788-f43b-4204-9359-1ec95ce0edbd631e056c510e9764d6a0a8f8
+Content-Type: application/json
+
+{
+    "newPassword":"Dat21092109!"
+}
+
+###
+
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+    "email":"buikhacdat1@gmail.com",
+    "password": "Dat21092109!"
+}
+
+###
+
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+    "email":"buikhacdat219@gmail.com",
+    "password": "Dat212121!"
+}
+
+###
+
+POST http://localhost:5000/api/t
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzM2YmFiZjJlNWQxMmI2NDRmNjQ1ZWUiLCJpYXQiOjE2NjQ1MzExNzV9.aVAedxZRjJXBp2KfPEi1J4Qx3GdEjltv35dy944TT5A
+
+{
+    "recipientEmail":"buikhacdat1@gmail.com"
+}
+
+###
+GET http://localhost:5000/api/user
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzM2YmFiZjJlNWQxMmI2NDRmNjQ1ZWUiLCJpYXQiOjE2NjQ1MzExNzV9.aVAedxZRjJXBp2KfPEi1J4Qx3GdEjltv35dy944TT5A
+
+###
+
+GET http://localhost:5000/api/user/631f40dbde769a644bf35aed
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzFlMDU2YzUxMGU5NzY0ZDZhMGE4ZjgiLCJpYXQiOjE2NjQ1MTAyNTJ9.7byVNSg0ZmqDittqQ2Vdt4wuw9PunXM3nzX5BXZzg8g
+
+
+###
+
+GET http://localhost:5000/api/t
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzFlMDU2YzUxMGU5NzY0ZDZhMGE4ZjgiLCJpYXQiOjE2NjQ0MzI1OTR9.DmEE1sefWs0FoLaT-42FRqOsKC0R3vNEiYWZejnsgd0
+
+###
+
+GET http://localhost:5000/api/t/631f5ab59f217bf85e559951
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzFlMDU2YzUxMGU5NzY0ZDZhMGE4ZjgiLCJpYXQiOjE2NjQ0MzI1OTR9.DmEE1sefWs0FoLaT-42FRqOsKC0R3vNEiYWZejnsgd0
+
+###
+
+POST http://localhost:5000/api/t/631f5ab59f217bf85e559951
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzFlMDU2YzUxMGU5NzY0ZDZhMGE4ZjgiLCJpYXQiOjE2NjQ3NjcxNDh9.0XzqgdGAuh1LXkl1-LDQWzw4hxJl2JnHnNFWRPhnwdA
+
+{
+    "content": "hh"
+}
