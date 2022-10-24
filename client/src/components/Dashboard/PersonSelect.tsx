@@ -1,8 +1,6 @@
 import Avatar from "@mui/material/Avatar";
-import { useContext } from "react";
 import { OverlayTrigger } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { ConversationContext } from "../../contexts/conversationContext";
 import { SToolTip } from "../../styles/Dashboard/Messenger/MessBody";
 import {
   SContainer,
@@ -15,26 +13,21 @@ const PersonSelect = ({
 }: {
   person: PersonType;
 }) => {
-  // Context
-  const { createConversation } = useContext(
-    ConversationContext
-  ) as ConversationStateType;
-
   // Navigate
   const navigate = useNavigate();
 
   const handleSelectPerson = async () => {
-    try {
-      const createData = await createConversation(email);
-      if (!createData.success) {
-        if (createData.errorCode === "ERR_CON_EXIST")
-          navigate(createData.conversation._id);
-      }
+    // try {
+    //   const createData = await createConversation(email);
+    //   if (!createData.success) {
+    //     if (createData.errorCode === "ERR_CON_EXIST")
+    //       navigate(createData.conversation._id);
+    //   }
 
-      navigate(`../t/${createData.conversation._id}`);
-    } catch (error) {
-      console.log(error);
-    }
+    //   navigate(`../t/${createData.conversation._id}`);
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   return (

@@ -1,7 +1,8 @@
-import { ChangeEvent, FormEvent, useContext, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import Form from "react-bootstrap/esm/Form";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../../contexts/authContext";
+import { loadUser, registerUser } from "../../store/features/auth/authSlice";
+import { useAppDispatch } from "../../store/hooks";
 import {
   SContainer,
   SLoginButton,
@@ -14,8 +15,7 @@ import { AuthStateType } from "../../types";
 import AlertMessage from "../layout/AlertMessage";
 
 const Register = () => {
-  // Context
-  const { registerUser } = useContext(AuthContext) as AuthStateType;
+  const dispatch = useAppDispatch()
 
   // Local state
   const [registerForm, setRegisterForm] = useState({
@@ -47,11 +47,11 @@ const Register = () => {
     try {
       const registerData = await registerUser({ email, username, password });
 
-      setAlert({
-        type: registerData.success ? "success" : "danger",
-        message: registerData.message,
-      });
-      setTimeout(() => setAlert({ type: "", message: "" }), 5000);
+      if (!registerData.success) {
+        setAlert({ type: "danger", message: registerData.message });
+        setTimeout(() => setAlert({ type: "", message: "" }), 5000);
+      }
+      else dispatch(loadUser())
     } catch (error) {
       console.log(error);
     }

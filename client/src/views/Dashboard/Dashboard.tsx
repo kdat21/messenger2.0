@@ -1,18 +1,19 @@
 import { SContainer } from "../../styles/Dashboard/Dashboard";
 import Sidebar from "../../components/Dashboard/Sidebar";
 import ChatsSidebar from "../../components/Dashboard/ChatsSidebar";
-import { MouseEvent, useContext, useEffect, useState } from "react";
+import { MouseEvent, useState } from "react";
 import PeopleSidebar from "../../components/Dashboard/PeopleSidebar";
 import Messenger from "../../components/Dashboard/Messenger/Messenger";
 import { useParams } from "react-router-dom";
 import usePrevious from "../../utils/usePrevious";
-import { AuthContext } from "../../contexts/authContext";
 import { AuthStateType } from "../../types";
 import NewConversation from "../../components/Dashboard/NewConversation/NewConversation";
+import { useAppSelector } from "../../store/hooks";
+import { selectAuth } from "../../store/features/auth/authSlice";
 
 const Dashboard = ({dashboardRoute}: {dashboardRoute: string}) => {
-  // Context
-  const {authState: {socket}} = useContext(AuthContext) as AuthStateType
+  // State
+  const {socket} = useAppSelector(selectAuth)
 
   // Local state
   const [openState, setOpenState] = useState(false);
@@ -29,9 +30,9 @@ const Dashboard = ({dashboardRoute}: {dashboardRoute: string}) => {
 
   const prevConversationId = usePrevious(conversationId!)
 
-  useEffect(() => {
-    if(prevConversationId) socket!.emit('leaveConversation', prevConversationId)
-  }, [conversationId]);
+  // useEffect(() => {
+  //   if(prevConversationId) socket!.emit('leaveConversation', prevConversationId)
+  // }, [conversationId]);
   
   const body = conversationId ? conversationId === 'new' ? <NewConversation /> : <Messenger conversationId={conversationId} /> : ''
 

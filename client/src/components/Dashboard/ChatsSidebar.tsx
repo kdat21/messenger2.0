@@ -8,45 +8,34 @@ import {
 } from "../../styles/Dashboard/SecondSiderbar";
 import newConversationIcon from "../../assets/create-new-conversation.svg";
 import searchIcon from "../../assets/search-icon.svg";
-import { ChangeEvent, useContext, useEffect,useState } from "react";
-import { ConversationContext } from "../../contexts/conversationContext";
-import {
-  ConversationStateType,
-  PeopleStateType,
-  AuthStateType,
-} from "../../types";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 import ConversationSelect from "./ConversationSelect";
-import { PeopleContext } from "../../contexts/peopleContext";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../contexts/authContext";
-import { SAutocomplete } from "../../styles/Dashboard/NewConversationHeader";
-import TextField from "@mui/material/TextField";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { selectPeople } from "../../store/features/people/peopleSlice";
+import {
+  getConversations,
+  selectConversation,
+} from "../../store/features/conversation/conversationSlice";
 
 const SecondSidebar = () => {
-  // Context
-  const {
-    conversationState: { conversationLoading, conversations },
-    getConversations,
-  } = useContext(ConversationContext) as ConversationStateType;
+  // State
+  const { conversationLoading, conversations } =
+    useAppSelector(selectConversation);
+  const { peopleLoading } = useAppSelector(selectPeople);
 
-  const {
-    peopleState: { peopleLoading },
-  } = useContext(PeopleContext) as PeopleStateType;
-
-  const {
-    authState: { socket },
-  } = useContext(AuthContext) as AuthStateType;
+  const dispatch = useAppDispatch();
 
   // Local state
-  const [searchConversation, setSearchConversation] = useState('')
+  const [searchConversation, setSearchConversation] = useState("");
 
   // Navigate
   const navigate = useNavigate();
 
   // Get all conversations
   useEffect(() => {
-    getConversations();
+    dispatch(getConversations());
   }, []);
 
   let body;
@@ -88,23 +77,6 @@ const SecondSidebar = () => {
         <img src={searchIcon} alt="searchIcon" />
         <SSearchInput placeholder="Search Messenger" />
       </SSearch>
-      {/* <SAutocomplete
-        freeSolo
-        options={conversations!.map(conversation => conversation.conversationName)}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            size="small"
-            label="Search Messenger"
-            onChange={onChangeSearchConversation}
-            value={searchConversation}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            // onKeyDown={}
-          />
-        )}
-      /> */}
 
       {body}
     </SContainer>

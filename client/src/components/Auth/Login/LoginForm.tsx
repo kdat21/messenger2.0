@@ -1,7 +1,8 @@
-import { ChangeEvent, FormEvent, useContext, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import Form from "react-bootstrap/esm/Form";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../../../contexts/authContext";
+import { loadUser, loginUser } from "../../../store/features/auth/authSlice";
+import { useAppDispatch } from "../../../store/hooks";
 import {
   SLoginButton,
   SLoginForm,
@@ -10,35 +11,35 @@ import {
   SLoginFormText,
   SRegisterButton,
 } from "../../../styles/Auth/Login/LoginForm";
-import { AuthStateType } from "../../../types";
 import AlertMessage from "../../layout/AlertMessage";
 
 const LoginForm = () => {
-  // Context
-  const { loginUser } = useContext(AuthContext) as AuthStateType;
+  const dispatch = useAppDispatch()
 
   // Local state
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
   const [alert, setAlert] = useState({ type: "", message: "" });
 
-  const {email, password} = loginForm
+  const { email, password } = loginForm;
 
-  const onChangeLoginForm = (event: ChangeEvent<HTMLInputElement>) => 
-    setLoginForm({...loginForm, [event.target.name]: event.target.value})
+  const onChangeLoginForm = (event: ChangeEvent<HTMLInputElement>) =>
+    setLoginForm({ ...loginForm, [event.target.name]: event.target.value });
 
   const login = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     try {
-      const loginData = await loginUser(loginForm)
+      const loginData = await loginUser(loginForm);
 
-      if(!loginData.success)
-      {setAlert({ type: "danger", message: loginData.message });
-      setTimeout(() => setAlert({ type: "", message: "" }), 5000);}
+      if (!loginData.success) {
+        setAlert({ type: "danger", message: loginData.message });
+        setTimeout(() => setAlert({ type: "", message: "" }), 5000);
+      }
+      else dispatch(loadUser())
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   return (
     <SLoginFormContainer>
@@ -50,29 +51,29 @@ const LoginForm = () => {
         Messenger makes it easy and fun to stay close to your favorite people.
       </SLoginFormSecondaryText>
       <SLoginForm onSubmit={login}>
-          <Form.Group className="my-2">
-            <Form.Control
-              type="email"
-              placeholder="Email address"
-              name="email"
-              value={email}
-              onChange = {onChangeLoginForm}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="my-3">
-            <Form.Control
-              type="password"
-              placeholder="Password"
-              name="password"
-              value={password}
-              onChange = {onChangeLoginForm}
-              required
-            />
-          </Form.Group>
-          <AlertMessage info={alert} />
-          <SLoginButton type="submit">Log In</SLoginButton>
-          <Link to="/"> Forgotten your password?</Link>
+        <Form.Group className="my-2">
+          <Form.Control
+            type="email"
+            placeholder="Email address"
+            name="email"
+            value={email}
+            onChange={onChangeLoginForm}
+            required
+          />
+        </Form.Group>
+        <Form.Group className="my-3">
+          <Form.Control
+            type="password"
+            placeholder="Password"
+            name="password"
+            value={password}
+            onChange={onChangeLoginForm}
+            required
+          />
+        </Form.Group>
+        <AlertMessage info={alert} />
+        <SLoginButton type="submit">Log In</SLoginButton>
+        <Link to="/"> Forgotten your password?</Link>
       </SLoginForm>
       <hr />
       <p>

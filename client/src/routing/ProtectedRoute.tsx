@@ -1,13 +1,11 @@
-import { useContext } from "react";
 import Spinner from "react-bootstrap/esm/Spinner";
 import { Navigate, Outlet } from "react-router-dom";
-import { AuthContext } from "../contexts/authContext";
+import { selectAuth } from "../store/features/auth/authSlice";
+import { useAppSelector } from "../store/hooks";
 import { AuthStateType } from "../types";
 
 const ProtectedRoute = () => {
-  const {
-    authState: { authLoading, isAuthenticated },
-  } = useContext(AuthContext) as AuthStateType;
+  const {authLoading, isAuthenticated} = useAppSelector(selectAuth)
 
   if (authLoading)
     return (

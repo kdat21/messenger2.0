@@ -4,28 +4,19 @@ import {
   SButton,
 } from "../../../styles/Dashboard/Messenger/Chat";
 import sendIcon from "../../../assets/send-icon.svg";
-import { ChangeEvent, FormEvent, useContext, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { Form } from "react-bootstrap";
-import {
-  ConversationStateType,
-  MessageStateType,
-  AuthStateType,
-} from "../../../types";
-import { MessageContext } from "../../../contexts/messageContext";
-import { ConversationContext } from "../../../contexts/conversationContext";
-import { AuthContext } from "../../../contexts/authContext";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+import { selectAuth } from "../../../store/features/auth/authSlice";
+import { selectConversation } from "../../../store/features/conversation/conversationSlice";
+import { getConversationContent, sendMessage } from "../../../store/features/message/messageSlice";
 
 const Chat = () => {
-  // Context
-  const { sendMessage } = useContext(MessageContext) as MessageStateType;
+  // State
+  const { conversation } = useAppSelector(selectConversation)
+  const { socket } = useAppSelector(selectAuth)
 
-  const {
-    conversationState: { conversation },
-  } = useContext(ConversationContext) as ConversationStateType;
-
-  const {
-    authState: { socket },
-  } = useContext(AuthContext) as AuthStateType;
+  const dispatch = useAppDispatch()
 
   // Local state
   const [messageContent, setMessageContent] = useState("");
@@ -38,8 +29,9 @@ const Chat = () => {
     event.preventDefault();
 
     try {
-      sendMessage(messageContent, conversation!._id);
-      socket!.emit("sendMessage", messageContent, conversation!._id);
+      dispatch(sendMessage({content: messageContent, conversationId: conversation!._id}));
+      // socket!.emit("sendMessage", messageContent, conversation!._id);
+      dispatch(getConversationContent(conversation!._id));
       setMessageContent("");
     } catch (error) {
       console.log(error);

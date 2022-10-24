@@ -6,15 +6,12 @@ import NotFound from "../../components/Auth/NotFound";
 import Register from "../../components/Auth/Register";
 import ResetPassword from "../../components/Auth/ResetPassword";
 import Verification from "../../components/Auth/Verification";
-import { useContext } from "react";
-import { AuthContext } from "../../contexts/authContext";
-import { AuthStateType } from "../../types";
 import Spinner from "react-bootstrap/esm/Spinner";
+import { useAppSelector } from "../../store/hooks";
+import { selectAuth } from "../../store/features/auth/authSlice";
 
-const Auth = ({bodyType}: {bodyType: string}) => {
-  const {
-    authState: { authLoading, isAuthenticated },
-  } = useContext(AuthContext) as AuthStateType;
+const Auth = ({ bodyType }: { bodyType: string }) => {
+  const { authLoading, isAuthenticated } = useAppSelector(selectAuth);
 
   let body;
 

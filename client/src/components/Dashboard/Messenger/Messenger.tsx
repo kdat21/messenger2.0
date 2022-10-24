@@ -1,7 +1,8 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { Spinner } from "react-bootstrap";
-import { AuthContext } from "../../../contexts/authContext";
-import { ConversationContext } from "../../../contexts/conversationContext";
+import { selectAuth } from "../../../store/features/auth/authSlice";
+import { findConversation, selectConversation } from "../../../store/features/conversation/conversationSlice";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { SContainer } from "../../../styles/Dashboard/Messenger/Messenger";
 import { AuthStateType, ConversationStateType } from "../../../types";
 import Chat from "./Chat";
@@ -9,17 +10,15 @@ import MessBody from "./MessBody";
 import MessHeader from "./MessHeader";
 
 const Messenger = ({ conversationId }: { conversationId: string }) => {
-  // Context
-  const {
-    conversationState: { conversationLoading, conversation },
-    findConversation,
-  } = useContext(ConversationContext) as ConversationStateType;
+  // State
+  const  { conversationLoading, conversation } = useAppSelector(selectConversation)
+  const {socket} = useAppSelector(selectAuth)
 
-  const {authState: {socket}} = useContext(AuthContext) as AuthStateType
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
-    findConversation(conversationId);
-    socket!.emit('joinConversation', conversationId)
+    dispatch(findConversation(conversationId));
+    // socket!.emit('joinConversation', conversationId)
   }, [conversationId]);
 
   // Handle body

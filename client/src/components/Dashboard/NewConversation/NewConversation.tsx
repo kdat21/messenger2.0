@@ -1,16 +1,14 @@
-import { useContext } from "react";
 import { Toast } from "react-bootstrap";
-import { ConversationContext } from "../../../contexts/conversationContext";
+import { selectConversation, setShowToast } from "../../../store/features/conversation/conversationSlice";
+import { useAppSelector } from "../../../store/hooks";
 import { SContainer } from "../../../styles/Dashboard/Messenger/Messenger";
-import { ConversationStateType } from "../../../types";
 import NewConversationBody from "./NewConversationBody";
 import NewConversationHeader from "./NewConversationHeader";
 
 const NewConversation = () => {
   const {
     showToast: { show, message, type },
-    setShowToast,
-  } = useContext(ConversationContext) as ConversationStateType;
+  } = useAppSelector(selectConversation)
 
   return (
     <SContainer>

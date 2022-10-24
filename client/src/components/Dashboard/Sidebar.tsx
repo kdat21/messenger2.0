@@ -1,9 +1,8 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import chatLogo from "../../assets/chat-logo.svg";
 import peopleLogo from "../../assets/people-logo.svg";
 import logOutIcon from "../../assets/log-out-logo.svg";
 import gearIcon from "../../assets/gear-icon.svg";
-import { AuthContext } from "../../contexts/authContext";
 import {
   SButton,
   SCollapseIcon,
@@ -19,19 +18,17 @@ import {
   ToggleSidebarProps,
 } from "../../types";
 import { Avatar } from "@mui/material";
-import { PeopleContext } from "../../contexts/peopleContext";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { logoutUser, selectAuth } from "../../store/features/auth/authSlice";
+import { getPeople } from "../../store/features/people/peopleSlice";
 
 const NavbarMenu = ({ isOpen, toggleSidebar }: ToggleSidebarProps) => {
-  // Context
-  const { getPeople } = useContext(PeopleContext) as PeopleStateType;
-
-  const {
-    authState: { user },
-    logoutUser,
-  } = useContext(AuthContext) as AuthStateType;
+  // State
+  const { user } = useAppSelector(selectAuth);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    getPeople();
+    dispatch(getPeople());
   }, []);
 
   return (
@@ -84,7 +81,10 @@ const NavbarMenu = ({ isOpen, toggleSidebar }: ToggleSidebarProps) => {
             Change Account Infomation
           </SNavDropdown.Item>
           <SNavDropdown.Divider />
-          <SNavDropdown.Item className="text-danger" onClick={logoutUser}>
+          <SNavDropdown.Item
+            className="text-danger"
+            onClick={() => dispatch(logoutUser())}
+          >
             <img src={logOutIcon} alt="logOutIcon" className="me-1" />
             Log Out
           </SNavDropdown.Item>

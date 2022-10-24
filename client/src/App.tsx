@@ -1,21 +1,23 @@
+import { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import NotFound from "./components/Auth/NotFound";
-import AuthContextProvider from "./contexts/authContext";
-import ConversationContextProvider from "./contexts/conversationContext";
-import MessageContextProvider from "./contexts/messageContext";
-import PeopleContextProvider from "./contexts/peopleContext";
 import ProtectedRoute from "./routing/ProtectedRoute";
+import { loadUser } from "./store/features/auth/authSlice";
+import { useAppDispatch } from "./store/hooks";
 import Auth from "./views/Auth/Auth";
 import Login from "./views/Auth/Login";
 import Dashboard from "./views/Dashboard/Dashboard";
 
 function App() {
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(loadUser())
+  }, [])
+  
+
   return (
-    <AuthContextProvider>
-      <PeopleContextProvider>
-        <ConversationContextProvider>
-          <MessageContextProvider>
             <BrowserRouter>
               <Routes>
                 <Route path="/">
@@ -52,10 +54,6 @@ function App() {
                 </Route>
               </Routes>
             </BrowserRouter>
-          </MessageContextProvider>
-        </ConversationContextProvider>
-      </PeopleContextProvider>
-    </AuthContextProvider>
   );
 }
 

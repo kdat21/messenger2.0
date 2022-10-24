@@ -1,7 +1,7 @@
-import { useContext, useEffect } from "react";
 import { Spinner } from "react-bootstrap";
-import { AuthContext } from "../../contexts/authContext";
-import { PeopleContext } from "../../contexts/peopleContext";
+import { selectAuth } from "../../store/features/auth/authSlice";
+import { selectPeople } from "../../store/features/people/peopleSlice";
+import { useAppSelector } from "../../store/hooks";
 import {
   SContainer,
   SConversationSelect as SPeopleSelect,
@@ -11,12 +11,9 @@ import { AuthStateType, PeopleStateType } from "../../types";
 import PersonSelect from "./PersonSelect";
 
 const PeopleSidebar = () => {
-  // Context
-  const {
-    peopleState: { people, peopleLoading },
-  } = useContext(PeopleContext) as PeopleStateType;
-
-  const {authState: {user}} = useContext(AuthContext) as AuthStateType
+  // State
+  const { people, peopleLoading } = useAppSelector(selectPeople)
+  const {user} = useAppSelector(selectAuth)
 
   let body;
 

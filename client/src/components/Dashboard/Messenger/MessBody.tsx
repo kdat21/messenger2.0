@@ -1,33 +1,22 @@
-import { useContext, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { OverlayTrigger, Spinner } from "react-bootstrap";
-import { AuthContext } from "../../../contexts/authContext";
-import { ConversationContext } from "../../../contexts/conversationContext";
-import { MessageContext } from "../../../contexts/messageContext";
+import { selectAuth } from "../../../store/features/auth/authSlice";
+import { selectConversation } from "../../../store/features/conversation/conversationSlice";
+import { getConversationContent, selectMessage } from "../../../store/features/message/messageSlice";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import {
   SContainer,
   SMessageContentContainer,
   SToolTip,
 } from "../../../styles/Dashboard/Messenger/MessBody";
-import {
-  AuthStateType,
-  ConversationStateType,
-  MessageStateType,
-} from "../../../types";
 
 const MessBody = () => {
-  // Context
-  const {
-    conversationState: { conversation },
-  } = useContext(ConversationContext) as ConversationStateType;
+  // State
+  const { conversation } = useAppSelector(selectConversation)
+  const { user, socket } = useAppSelector(selectAuth)
+  const { messageLoading, conversationContent } = useAppSelector(selectMessage)
 
-  const {
-    authState: { user, socket },
-  } = useContext(AuthContext) as AuthStateType;
-
-  const {
-    messageState: { messageLoading, conversationContent },
-    getConversationContent,
-  } = useContext(MessageContext) as MessageStateType;
+  const dispatch = useAppDispatch()
 
   const { _id } = conversation!;
 
@@ -40,7 +29,7 @@ const MessBody = () => {
 
   // Get conversation content
   useEffect(() => {
-    getConversationContent(_id);
+    dispatch(getConversationContent(_id));
     scrollToBottom();
   }, [_id]);
 
@@ -48,12 +37,12 @@ const MessBody = () => {
     scrollToBottom();
   }, [JSON.stringify(conversationContent)]);
 
-  useEffect(() => {
-    socket!.on('newMessageSent', () => {
-        // console.log('a')
-        getConversationContent(_id);
-    })
-  }, [])
+  // useEffect(() => {
+  //   socket!.on('newMessageSent', () => {
+  //       // console.log('a')
+  //       getConversationContent(_id);
+  //   })
+  // }, [])
 
   // Body
   const body = messageLoading ? (

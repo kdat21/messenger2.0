@@ -50,6 +50,8 @@ export interface ConversationState {
   conversationLoading: boolean;
   conversations?: Array<ConversationType>;
   conversation?: ConversationType | null;
+  focusConversation: string;
+  showToast: ToastType;
 }
 
 export interface ConversationAction {
@@ -78,7 +80,7 @@ export type ConversationStateType = {
     }>
   >;
   focusConversation: string;
-  setFocusConversation: React.Dispatch<React.SetStateAction<string>>
+  setFocusConversation: React.Dispatch<React.SetStateAction<string>>;
 };
 
 // Message Type
@@ -142,4 +144,8 @@ export interface Props {
 export interface ToggleSidebarProps {
   isOpen: boolean;
   toggleSidebar: (event: MouseEvent<HTMLElement>) => void;
+}
+
+export interface ToastType {
+  show: boolean; message: string; type: string
 }

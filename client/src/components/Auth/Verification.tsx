@@ -1,20 +1,16 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { AuthContext } from "../../contexts/authContext";
+import { verifyUser } from "../../store/features/auth/authSlice";
 import {
   SButton,
   SContainer,
   SSecondText,
   SText,
 } from "../../styles/Auth/Verify";
-import { AuthStateType } from "../../types";
 
 const Verification = () => {
   // Params
   const { userId, verifyString } = useParams();
-
-  // Context
-  const { verifyUser } = useContext(AuthContext) as AuthStateType;
 
   // Local state
   const [message, setMessage] = useState("");
@@ -26,7 +22,7 @@ const Verification = () => {
 
   const verify = async (userId: string, verifyString: string) => {
     try {
-      const verifyData = await verifyUser(userId!, verifyString!);
+      const verifyData = await verifyUser({userId, verifyString});
 
       setMessage(verifyData.message);
       setSuccess(verifyData.success);

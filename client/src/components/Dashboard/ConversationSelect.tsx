@@ -1,10 +1,17 @@
 import Avatar from "@mui/material/Avatar";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../contexts/authContext";
-import { ConversationContext } from "../../contexts/conversationContext";
-import { MessageContext } from "../../contexts/messageContext";
-import { PeopleContext } from "../../contexts/peopleContext";
+import { selectAuth } from "../../store/features/auth/authSlice";
+import {
+  selectConversation,
+  setFocusConversation,
+} from "../../store/features/conversation/conversationSlice";
+import {
+  getLastMessage,
+  selectMessage,
+} from "../../store/features/message/messageSlice";
+import { selectPeople } from "../../store/features/people/peopleSlice";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
   SContainer,
   SConversationInfo,
@@ -14,14 +21,7 @@ import {
   STextContainer,
   STime,
 } from "../../styles/Dashboard/ConversationSelect";
-import {
-  AuthStateType,
-  ConversationType,
-  MessageStateType,
-  MessageType,
-  PeopleStateType,
-  ConversationStateType,
-} from "../../types";
+import { ConversationType, MessageType } from "../../types";
 import setConversationName from "../../utils/setConversationName";
 
 const ConversationSelect = ({
@@ -29,23 +29,13 @@ const ConversationSelect = ({
 }: {
   conversation: ConversationType;
 }) => {
-  // Context
-  const {
-    peopleState: { people },
-  } = useContext(PeopleContext) as PeopleStateType;
+  // State
+  const { people } = useAppSelector(selectPeople);
+  const { user } = useAppSelector(selectAuth);
+  const { focusConversation } = useAppSelector(selectConversation);
+  const { conversationContent } = useAppSelector(selectMessage);
 
-  const {
-    authState: { user },
-  } = useContext(AuthContext) as AuthStateType;
-
-  const { focusConversation, setFocusConversation } = useContext(
-    ConversationContext
-  ) as ConversationStateType;
-
-  const {
-    messageState: { conversationContent },
-    getLastMessage,
-  } = useContext(MessageContext) as MessageStateType;
+  const dispatch = useAppDispatch();
 
   // Local state
   const [lastMessage, setLastMessage] = useState<MessageType | null>(null);
@@ -87,7 +77,7 @@ const ConversationSelect = ({
   const recipientUsers = setConversationName(participants, user, people);
 
   const handleSelectConversation = () => {
-    setFocusConversation(_id);
+    dispatch(setFocusConversation(_id));
     navigate(_id);
   };
 
