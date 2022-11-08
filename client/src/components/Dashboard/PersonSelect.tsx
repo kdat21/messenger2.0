@@ -1,4 +1,5 @@
 import Avatar from "@mui/material/Avatar";
+import { useTheme } from "@mui/material/styles";
 import { OverlayTrigger } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { SToolTip } from "../../styles/Dashboard/Messenger/MessBody";
@@ -15,6 +16,7 @@ const PersonSelect = ({
 }) => {
   // Navigate
   const navigate = useNavigate();
+  const theme = useTheme()
 
   const handleSelectPerson = async () => {
     // try {
@@ -36,7 +38,7 @@ const PersonSelect = ({
       placement="bottom"
       overlay={<SToolTip className="shadow">{email}</SToolTip>}
     >
-      <SContainer onClick={handleSelectPerson}>
+      <SContainer onClick={handleSelectPerson} $backgroundColor={theme.palette.action.hover}>
       <Avatar sx={{ width: 40, height: 40 }} className="me-3">
         {username[0].toUpperCase()}
       </Avatar>

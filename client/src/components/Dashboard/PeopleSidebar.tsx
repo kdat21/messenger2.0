@@ -1,3 +1,4 @@
+import { useTheme } from "@mui/material/styles";
 import { Spinner } from "react-bootstrap";
 import { selectAuth } from "../../store/features/auth/authSlice";
 import { selectPeople } from "../../store/features/people/peopleSlice";
@@ -14,6 +15,7 @@ const PeopleSidebar = () => {
   // State
   const { people, peopleLoading } = useAppSelector(selectPeople)
   const {user} = useAppSelector(selectAuth)
+  const theme  = useTheme()
 
   let body;
 
@@ -36,7 +38,7 @@ const PeopleSidebar = () => {
   }
 
   return (
-    <SContainer>
+    <SContainer $borderColor={theme.palette.divider}>
       <SHeader>People</SHeader>
       {body}
     </SContainer>

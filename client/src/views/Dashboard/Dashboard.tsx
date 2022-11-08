@@ -6,7 +6,6 @@ import PeopleSidebar from "../../components/Dashboard/PeopleSidebar";
 import Messenger from "../../components/Dashboard/Messenger/Messenger";
 import { useParams } from "react-router-dom";
 import usePrevious from "../../utils/usePrevious";
-import { AuthStateType } from "../../types";
 import NewConversation from "../../components/Dashboard/NewConversation/NewConversation";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { selectAuth } from "../../store/features/auth/authSlice";

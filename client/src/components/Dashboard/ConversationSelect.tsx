@@ -1,4 +1,5 @@
 import Avatar from "@mui/material/Avatar";
+import { useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { selectAuth } from "../../store/features/auth/authSlice";
@@ -34,6 +35,7 @@ const ConversationSelect = ({
   const { user } = useAppSelector(selectAuth);
   const { focusConversation } = useAppSelector(selectConversation);
   const { conversationContent } = useAppSelector(selectMessage);
+  const theme = useTheme()
 
   const dispatch = useAppDispatch();
 
@@ -85,6 +87,7 @@ const ConversationSelect = ({
     <SContainer
       onClick={handleSelectConversation}
       $focus={focusConversation === _id ? true : false}
+      $backgroundColor={theme.palette.action.hover}
     >
       <Avatar sx={{ width: 40, height: 40 }} className="me-2">
         {recipientUsers[0].toUpperCase()}

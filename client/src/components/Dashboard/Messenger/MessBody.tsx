@@ -1,3 +1,4 @@
+import { useTheme } from "@mui/material/styles";
 import { useEffect, useRef } from "react";
 import { OverlayTrigger, Spinner } from "react-bootstrap";
 import { selectAuth } from "../../../store/features/auth/authSlice";
@@ -15,6 +16,10 @@ const MessBody = () => {
   const { conversation } = useAppSelector(selectConversation)
   const { user, socket } = useAppSelector(selectAuth)
   const { messageLoading, conversationContent } = useAppSelector(selectMessage)
+  const theme = useTheme()
+  const abc = {
+    
+  }
 
   const dispatch = useAppDispatch()
 
@@ -62,6 +67,8 @@ const MessBody = () => {
       >
         <SMessageContentContainer
           $sender={message.sender === user!._id ? true : false}
+          $senderColor={{$background: theme.palette.message?.sender.backgroundColor, $text: theme.palette.message?.sender.color} }
+          $receiverColor={{$background: theme.palette.message?.receiver.backgroundColor, $text: theme.palette.message?.receiver.color} }
         >
           {message.content}
         </SMessageContentContainer>

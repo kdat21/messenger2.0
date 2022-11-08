@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const SContainer = styled.div`
-  margin-top: 3em;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;

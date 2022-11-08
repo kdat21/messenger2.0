@@ -1,6 +1,10 @@
 import styled from "styled-components";
 
-export const SContainer = styled.div`
+interface Props {
+  $backgroundColor: string;
+}
+
+export const SContainer = styled.div<Props>`
   display: flex;
   align-items: center;
   height: 50px;
@@ -11,7 +15,7 @@ export const SContainer = styled.div`
   word-break: break-all;
 
   :hover {
-    background-color: #f2f2f2;
+    background-color: ${(props) => props.$backgroundColor};
   }
 `;
 

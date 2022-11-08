@@ -1,13 +1,17 @@
 import { Button, Form } from "react-bootstrap";
 import styled from "styled-components";
 
-export const SContainer = styled.div`
+interface Props {
+  $borderColor: string
+}
+
+export const SContainer = styled.div<Props>`
   display: flex;
   align-items: center;
 
   min-height: 60px;
   margin-top: auto;
-  border-top: 2px solid whitesmoke;
+  border-top: 2px solid ${(props) => props.$borderColor};
 `;
 
 export const SForm = styled(Form)`
@@ -22,7 +26,7 @@ export const SForm = styled(Form)`
     border: none;
     font-size: 14px;
     border-radius: 50px;
-    background-color: #f5f5f5;
+    background-color: ${(props) => props.$backgroundColor};
   }
 `;
 
@@ -34,14 +38,13 @@ display: flex;
   border: none;
   border-radius: 100%;
   width: 35px;
-  background-color: white;
-  color: black;
+  background-color: ${(props) => props.$backgroundColor};
 
   :hover {
-    background-color: #f2f2f2;
+    background-color: ${(props) => props.$backgroundHover};
   }
 
   :focus {
-    background-color: #c4c4c4;
+    background-color: ${(props) => props.$backgroundFocus};
   }
 `;

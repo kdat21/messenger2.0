@@ -18,12 +18,15 @@ import {
   getConversations,
   selectConversation,
 } from "../../store/features/conversation/conversationSlice";
+import { useTheme } from "@mui/material/styles";
+import { SSVG } from "../../styles/Dashboard/Sidebar";
 
 const SecondSidebar = () => {
   // State
   const { conversationLoading, conversations } =
     useAppSelector(selectConversation);
   const { peopleLoading } = useAppSelector(selectPeople);
+  const theme = useTheme()
 
   const dispatch = useAppDispatch();
 
@@ -65,11 +68,13 @@ const SecondSidebar = () => {
   };
 
   return (
-    <SContainer>
+    <SContainer $borderColor={theme.palette.divider}>
       <SHeader>
         Chats
-        <SButton className="shadow-none" onClick={createNewConversation}>
-          <img src={newConversationIcon} alt="newConversationIcon" />
+        <SButton $backgroundColor={theme.palette.background.default}
+          $backgroundHover={theme.palette.action.hover}
+          $backgroundFocus={theme.palette.action.focus} className="shadow-none" onClick={createNewConversation}>
+          <SSVG src={newConversationIcon} color={theme.palette.text.primary} />
         </SButton>
       </SHeader>
 

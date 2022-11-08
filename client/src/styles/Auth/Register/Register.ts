@@ -2,7 +2,6 @@ import { Button, Form } from "react-bootstrap";
 import styled from "styled-components";
 
 export const SContainer = styled.div`
-  margin-top: 3em;
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -1,4 +1,4 @@
-import { SContainer } from "../../styles/Auth/Login/Login";
+import { SContainer, SSContainer } from "../../styles/Auth/Login/Login";
 import ImageBackground from "../../components/Auth/Login/ImageBackground";
 import LoginForm from "../../components/Auth/Login/LoginForm";
 import NavbarMenu from "../../components/Auth/Login/NavbarMenu";
@@ -23,13 +23,13 @@ const Login = () => {
   else if (isAuthenticated) return <Navigate to='t' />
 
   else body = (
-    <>
+    <SSContainer>
       <NavbarMenu />
       <SContainer>
         <LoginForm />
         <ImageBackground />
       </SContainer>
-    </>
+    </SSContainer>
   )
 
   return (

@@ -1,3 +1,4 @@
+import { useTheme } from "@mui/material/styles";
 import { selectAuth } from "../../../store/features/auth/authSlice";
 import { selectConversation } from "../../../store/features/conversation/conversationSlice";
 import { selectPeople } from "../../../store/features/people/peopleSlice";
@@ -13,12 +14,13 @@ const MessHeader = () => {
   const { conversation } = useAppSelector(selectConversation)
   const { people } = useAppSelector(selectPeople)
   const { user } = useAppSelector(selectAuth);
+  const theme = useTheme()
 
   const { participants } = conversation!;
   const conversationName = setConversationName(participants, user, people);
 
   return (
-    <SContainer>
+    <SContainer $borderColor={theme.palette.divider}>
       <SConversationName>{conversationName}</SConversationName>
     </SContainer>
   );

@@ -1,6 +1,7 @@
-import Button from "react-bootstrap/esm/Button";
+import { Button } from "@mui/material";
 import Form from "react-bootstrap/esm/Form";
 import styled from "styled-components";
+import {styled as sty} from '@mui/material'
 
 export const SLoginFormContainer = styled.div`
   display: flex;
@@ -11,29 +12,23 @@ export const SLoginFormContainer = styled.div`
     Lucida Grande, sans-serif;
 `;
 
-export const SLoginFormText = styled.div`
-  background-image: linear-gradient(
-    83.84deg,
-    #0088ff -6.87%,
-    #a033ff 26.54%,
-    #ff5c87 58.58%
-  );
-  font-size: 90px;
-  letter-spacing: -4px;
-  line-height: 100px;
-  margin-bottom: 10px;
-  text-align: left;
-  -webkit-background-clip: text;
-  color: transparent;
-  display: inline-block;
-  font-weight: 600;
-  padding: 0 0 8px;
-  word-break: break-word;
-`;
+export const SText = sty('div')(({theme}) => ({
+  backgroundImage: `linear-gradient(83.84deg, ${theme.palette.primary.main} -6.87%, ${theme.palette.primary.dark} 26.54%, ${theme.palette.secondary.main} 58.58%)`,
+  fontSize: '90px',
+  letterSpacing: '-4px',
+  lineHeight: '100px',
+  marginBottom: '10px',
+  textAlign: 'left',
+  WebkitBackgroundClip: 'text',
+  color: 'transparent',
+  display: 'inline-block',
+  fontWeight: 600,
+  padding: '0 0 8px',
+  wordBreak: 'break-word',
+}))
 
 export const SLoginFormSecondaryText = styled.div`
   text-align: left;
-  color: #595959;
   margin: 0 0 38px;
   max-width: unset;
   font-size: 20px;
@@ -45,7 +40,6 @@ export const SLoginFormSecondaryText = styled.div`
 export const SLoginForm = styled(Form)`
   margin: 4px 0 4px 0;
   .form-control {
-    background: rgba(0, 0, 0, 0.04);
     border: none;
     border-radius: 10px;
     font-size: 16px;
@@ -55,7 +49,7 @@ export const SLoginForm = styled(Form)`
 
 export const SLoginButton = styled(Button)`
   margin-right: 1em;
-  justify-content: center;
+  /* justify-content: center;
   background-color: #0a7cff;
   border: none;
   border-radius: 24px;
@@ -69,12 +63,13 @@ export const SLoginButton = styled(Button)`
     200ms cubic-bezier(0.08, 0.52, 0.52, 1) transform;
   :hover {
     background-color: #4d4dff;
-  }
+  } */
 `;
 
 export const SRegisterButton = styled(Button)`
-  justify-content: center;
+  /* justify-content: center;
   background-color: #ff5c87;
+  text-decoration: none;
   border: none;
   border-radius: 24px;
   font-size: 16px;
@@ -87,5 +82,5 @@ export const SRegisterButton = styled(Button)`
     200ms cubic-bezier(0.08, 0.52, 0.52, 1) transform;
   :hover {
     background-color: #FF7061;
-  }
+  } */
 `;

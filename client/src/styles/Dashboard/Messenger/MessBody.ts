@@ -1,7 +1,9 @@
 import styled from "styled-components";
 
-interface SenderProps {
+interface Props {
   $sender: boolean;
+  $senderColor: { $background: string; $text: string };
+  $receiverColor: { $background: string; $text: string };
 }
 
 export const SContainer = styled.div`
@@ -14,7 +16,7 @@ export const SContainer = styled.div`
   padding: 15px;
 `;
 
-export const SMessageContentContainer = styled.div<SenderProps>`
+export const SMessageContentContainer = styled.div<Props>`
   display: flex;
   align-items: center;
   padding: 8px 15px 8px 15px;
@@ -22,8 +24,8 @@ export const SMessageContentContainer = styled.div<SenderProps>`
   max-width: 75%;
   align-self: ${(props) => (props.$sender ? "flex-end" : "flex-start")};
   border-radius: 18px 18px 18px 18px;
-  background-color: ${(props) => (props.$sender ? "#0084FF" : "#E4E6EB")};
-  color: ${(props) => (props.$sender ? "white" : "black")};
+  background-color: ${(props) => (props.$sender ? props.$senderColor.$background : props.$receiverColor.$background)};
+  color: ${(props) => (props.$sender ? props.$senderColor.$text : props.$receiverColor.$text)};
   word-break: break-word;
   line-height: normal;
 `;

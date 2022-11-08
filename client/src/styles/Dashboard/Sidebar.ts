@@ -15,7 +15,7 @@ export const SNavbar = styled(Navbar)`
   height: 100vh;
   min-width: ${(props) => (props.$isopen ? "210px" : "60px")};
   max-width: ${(props) => (props.$isopen ? "210px" : "60px")};
-  border-right: 2px solid whitesmoke;
+  border-right: 2px solid ${(props) => props.$borderColor};
   align-items: flex-start;
 `;
 
@@ -23,7 +23,7 @@ export const SNav = styled(Nav)`
   display: ${(props) => (props.$isopen ? "" : "block")};
   padding: 8px;
   width: 100%;
-  
+
   align-items: center;
 
   .avatar {
@@ -32,26 +32,31 @@ export const SNav = styled(Nav)`
   }
 `;
 
-export const SNavLink = styled(NavLink)`
+interface SNavLinkProps {
+  $textColor: string;
+  $backgroundColor: string;
+}
+
+export const SNavLink = styled(NavLink)<SNavLinkProps>`
   display: flex;
   align-items: center;
-  color: black;
+  color: ${(props) => props.$textColor};
   height: 34px;
   border-radius: 5px;
   text-decoration: none;
   :hover {
-    background-color: #f5f5f5;
-    color: black;
+    background-color: ${(props) => props.$backgroundColor};
+    color: ${(props) => props.$textColor};
   }
 
   :focus {
-    background-color: #f5f5f5;
+    background-color: ${(props) => props.$backgroundColor};
   }
 `;
 
 interface SVGProps {
   color: string;
-  $isopen: boolean;
+  $isopen?: boolean;
 }
 
 export const SSVG = styled(SVG)<SVGProps>`
@@ -62,15 +67,19 @@ export const SSVG = styled(SVG)<SVGProps>`
 `;
 
 export const SNavDropdown = styled(NavDropdown)`
-  background-color: white;
+  /* background-color: white; */
   border-radius: 5px;
 
-  :hover {
+  /* :hover {
     background-color: #f5f5f5;
-  }
+  } */
 
   .dropdown-toggle {
     ${(props) => (props.$isopen ? "" : "padding: 8px 0px 8px 0px !important")};
+  }
+
+  .dropdown-menu {
+    background-color: ${(props) => props.$dropdownMenuColor};
   }
 
   .dropdown-toggle::after {
@@ -84,16 +93,17 @@ export const SNavDropdown = styled(NavDropdown)`
   .dropdown-item {
     border-radius: 5px;
     font-weight: 600;
+    color: ${(props) => props.$textColor};
     align-items: center;
     justify-content: center;
 
     :hover {
-      background-color: #f5f5f5;
+      background-color: ${(props) => props.$itemColor};
     }
 
     :active {
-      background-color: #c4c4c4;
-      color: black;
+      background-color: ${(props) => props.$itemColor};
+      color: ${(props) => props.$textColor};
     }
   }
 `;

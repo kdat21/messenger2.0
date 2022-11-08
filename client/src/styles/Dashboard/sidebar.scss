@@ -1,0 +1,15 @@
+.sub-menu2:hover {
+  .our-pick-menu {
+    display: block;
+  }
+}
+
+.change-theme {
+    display: flex;
+    justify-content: flex-start !important;
+
+}
+
+.change-theme-toggle {
+    flex-grow: 1;
+}

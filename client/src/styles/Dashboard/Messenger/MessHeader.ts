@@ -1,9 +1,13 @@
 import styled from "styled-components";
 
-export const SContainer = styled.div`
+interface Props {
+  $borderColor: string
+}
+
+export const SContainer = styled.div<Props>`
   display: flex;
   min-height: 60px;
-  border-bottom: 2px solid whitesmoke;
+  border-bottom: 2px solid ${(props) => props.$borderColor};
 `;
 
 export const SConversationName = styled.div`

@@ -1,6 +1,7 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { Button } from "@mui/material";
+import { ChangeEvent, FormEvent, MouseEvent, useState } from "react";
 import Form from "react-bootstrap/esm/Form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { loadUser, loginUser } from "../../../store/features/auth/authSlice";
 import { useAppDispatch } from "../../../store/hooks";
 import {
@@ -8,13 +9,14 @@ import {
   SLoginForm,
   SLoginFormContainer,
   SLoginFormSecondaryText,
-  SLoginFormText,
   SRegisterButton,
+  SText,
 } from "../../../styles/Auth/Login/LoginForm";
 import AlertMessage from "../../layout/AlertMessage";
 
 const LoginForm = () => {
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
 
   // Local state
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
@@ -41,12 +43,18 @@ const LoginForm = () => {
     }
   };
 
+  const handleOnClickRegister = (event: MouseEvent<HTMLElement>) => {
+    event.preventDefault()
+
+    navigate('/register')
+  }
+
   return (
     <SLoginFormContainer>
-      <SLoginFormText>
+      <SText>
         Hang out <br />
         anytime, anywhere
-      </SLoginFormText>
+      </SText>
       <SLoginFormSecondaryText>
         Messenger makes it easy and fun to stay close to your favorite people.
       </SLoginFormSecondaryText>
@@ -72,14 +80,14 @@ const LoginForm = () => {
           />
         </Form.Group>
         <AlertMessage info={alert} />
-        <SLoginButton type="submit">Log In</SLoginButton>
+        {/* <SLoginButton type="submit">Log In</SLoginButton> */}
+        <SLoginButton type="submit" variant='contained'>Log in</SLoginButton>
         <Link to="/"> Forgotten your password?</Link>
       </SLoginForm>
       <hr />
       <p>
-        <Link to="/register">
-          <SRegisterButton>Create new account</SRegisterButton>
-        </Link>
+        
+          <SRegisterButton color='secondary' variant='contained' onClick={handleOnClickRegister}>Create new account</SRegisterButton>
       </p>
     </SLoginFormContainer>
   );

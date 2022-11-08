@@ -1,16 +1,19 @@
 import styled from "styled-components";
 import { Button } from "react-bootstrap";
 
-export const SContainer = styled.div`
+interface Props {
+  $borderColor: string
+}
+
+export const SContainer = styled.div<Props>`
   display: flex;
   flex-direction: column;
   font-family: inherit;
   font-weight: 500;
-  color: black;
   height: 100vh;
   min-width: 460px;
   max-width: 460px;
-  border-right: 2px solid whitesmoke;
+  border-right: 2px solid ${(props) => props.$borderColor};
 `;
 
 export const SHeader = styled.div`
@@ -28,18 +31,18 @@ export const SButton = styled(Button)`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f5f5f5;
+  background-color: ${(props) => props.$backgroundColor};
   border: none;
   border-radius: 100%;
   width: 40px;
   height: 40px;
   :hover,
   :focus {
-    background-color: #e9e9e9;
+    background-color: ${(props) => props.$backgroundHover};
   }
 
   :active {
-    background-color: #c4c4c4;
+    background-color: ${(props) => props.$backgroundFocus};
   }
 `;
 

@@ -1,10 +1,11 @@
 import styled from "styled-components";
 
-interface FocusProps {
+interface Props {
   $focus: boolean;
+  $backgroundColor: string;
 }
 
-export const SContainer = styled.div<FocusProps>`
+export const SContainer = styled.div<Props>`
   display: flex;
   align-items: center;
   height: 70px;
@@ -13,10 +14,10 @@ export const SContainer = styled.div<FocusProps>`
   margin: 0px 10px 0px 10px;
   border-radius: 10px;
   word-break: break-all;
-  background-color: ${(props) => (props.$focus ? "#f2f2f2" : "")};
+  background-color: ${(props) => (props.$focus ? props.$backgroundColor : "")};
 
   :hover {
-    background-color: #f2f2f2;
+    background-color: ${(props) => props.$backgroundColor};
   }
 `;
 

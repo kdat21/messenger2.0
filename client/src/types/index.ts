@@ -1,5 +1,11 @@
+import { Theme } from "@mui/material/styles";
 import { MouseEvent } from "react";
 import { Socket } from "socket.io-client";
+
+// Theme Type
+export interface ThemeState {
+  themeMode: string;
+}
 
 // Auth Type
 export interface UserType {
