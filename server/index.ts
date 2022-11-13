@@ -28,22 +28,24 @@ app.use("/api/auth", authRouter);
 app.use("/api/t", messageRouter);
 app.use("/api/user", userRouter);
 
-io.on("connection", (socket) => {
+const messageSocket = io.of('/message')
+
+messageSocket.on("connection", (socket) => {
   console.log(`user ${socket.id} connected`);
 
   socket.on("joinConversation", (conversationId: string) => {
     socket.join(conversationId);
-    console.log(`join ${conversationId}`);
+    console.log(`user ${socket.id} join ${conversationId}`);
   });
 
   socket.on("leaveConversation", (conversationId: string) => {
     socket.leave(conversationId);
-    console.log(`leave ${conversationId}`);
+    console.log(`user ${socket.id} leave ${conversationId}`);
   });
 
-  socket.on("sendMessage", (message: string, conversationId: string) => {
-    console.log(`new message '${message}' at conversation ${conversationId}`);
-    socket.to(conversationId).emit("newMessageSent");
+  socket.on("sendMessage", (data: any) => {
+    console.log(`new message '${data.message.content}' at conversation ${data.message.conversationId}`);
+    socket.to(data.message.conversationId).emit("newMessageSent", data.message);
   });
 
   socket.on("disconnect", () => {

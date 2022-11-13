@@ -20,7 +20,7 @@ export interface AuthState {
   authLoading: boolean;
   isAuthenticated: boolean;
   user: UserType | null;
-  socket: Socket | null;
+  // socket: Socket | null;
 }
 
 export interface AuthAction {
@@ -150,6 +150,7 @@ export interface Props {
 export interface ToggleSidebarProps {
   isOpen: boolean;
   toggleSidebar: (event: MouseEvent<HTMLElement>) => void;
+  socket: Socket | null
 }
 
 export interface ToastType {

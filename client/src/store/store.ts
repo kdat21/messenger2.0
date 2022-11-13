@@ -19,15 +19,22 @@ import autoMergeLevel2 from "redux-persist/lib/stateReconciler/autoMergeLevel2";
 const rootPersistConfig = {
   key: "root",
   storage,
+  blacklist: ['message'],
   stateReconciler: autoMergeLevel2,
 };
+
+const messagePersistConfig = {
+  key: 'message',
+  storage,
+  blacklist: ['conversationContent']
+}
 
 const rootReducers = combineReducers({
   auth: authReducer,
   people: peopleReducer,
   conversation: conversationReducer,
-  message: messageReducer,
-  theme: themeReducer
+  message: persistReducer(messagePersistConfig, messageReducer),
+  theme: themeReducer,
 });
 
 const persistedReducer = persistReducer<ReturnType<typeof rootReducers>>(

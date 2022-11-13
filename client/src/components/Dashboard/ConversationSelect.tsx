@@ -1,9 +1,10 @@
 import Avatar from "@mui/material/Avatar";
 import { useTheme } from "@mui/material/styles";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { selectAuth } from "../../store/features/auth/authSlice";
 import {
+  getConversations,
   selectConversation,
   setFocusConversation,
 } from "../../store/features/conversation/conversationSlice";
@@ -35,7 +36,7 @@ const ConversationSelect = ({
   const { user } = useAppSelector(selectAuth);
   const { focusConversation } = useAppSelector(selectConversation);
   const { conversationContent } = useAppSelector(selectMessage);
-  const theme = useTheme()
+  const theme = useTheme();
 
   const dispatch = useAppDispatch();
 

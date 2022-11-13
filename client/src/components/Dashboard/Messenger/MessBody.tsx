@@ -1,9 +1,15 @@
 import { useTheme } from "@mui/material/styles";
 import { useEffect, useRef } from "react";
 import { OverlayTrigger, Spinner } from "react-bootstrap";
+import { Socket } from "socket.io-client";
+import { useSocket } from "../../../hooks/useSocket";
 import { selectAuth } from "../../../store/features/auth/authSlice";
 import { selectConversation } from "../../../store/features/conversation/conversationSlice";
-import { getConversationContent, selectMessage } from "../../../store/features/message/messageSlice";
+import {
+  getConversationContent,
+  receiveMessage,
+  selectMessage,
+} from "../../../store/features/message/messageSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import {
   SContainer,
@@ -11,17 +17,14 @@ import {
   SToolTip,
 } from "../../../styles/Dashboard/Messenger/MessBody";
 
-const MessBody = () => {
+const MessBody = ({socket}: {socket: Socket | null}) => {
   // State
-  const { conversation } = useAppSelector(selectConversation)
-  const { user, socket } = useAppSelector(selectAuth)
-  const { messageLoading, conversationContent } = useAppSelector(selectMessage)
-  const theme = useTheme()
-  const abc = {
-    
-  }
+  const { conversation } = useAppSelector(selectConversation);
+  const { user } = useAppSelector(selectAuth);
+  const { messageLoading, conversationContent } = useAppSelector(selectMessage);
+  const theme = useTheme();
 
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
   const { _id } = conversation!;
 
@@ -42,12 +45,15 @@ const MessBody = () => {
     scrollToBottom();
   }, [JSON.stringify(conversationContent)]);
 
-  // useEffect(() => {
-  //   socket!.on('newMessageSent', () => {
-  //       // console.log('a')
-  //       getConversationContent(_id);
-  //   })
-  // }, [])
+  useEffect(() => {
+    socket?.on("newMessageSent", (message: any) => {
+      dispatch(receiveMessage(message));
+    });
+
+    return () => {
+      socket?.off("newMessageSent");
+    };
+  }, []);
 
   // Body
   const body = messageLoading ? (
@@ -67,8 +73,14 @@ const MessBody = () => {
       >
         <SMessageContentContainer
           $sender={message.sender === user!._id ? true : false}
-          $senderColor={{$background: theme.palette.message?.sender.backgroundColor, $text: theme.palette.message?.sender.color} }
-          $receiverColor={{$background: theme.palette.message?.receiver.backgroundColor, $text: theme.palette.message?.receiver.color} }
+          $senderColor={{
+            $background: theme.palette.message?.sender.backgroundColor,
+            $text: theme.palette.message?.sender.color,
+          }}
+          $receiverColor={{
+            $background: theme.palette.message?.receiver.backgroundColor,
+            $text: theme.palette.message?.receiver.color,
+          }}
         >
           {message.content}
         </SMessageContentContainer>

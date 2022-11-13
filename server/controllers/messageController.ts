@@ -67,7 +67,7 @@ export const messageGetConversation = async (req: Request, res: Response) => {
     const conversations = await Conversation.find({
       participants: req.userId,
     })
-      .sort({ lastUpdate: -1 })
+      // .sort({ lastUpdate: -1 })
     res.json({ success: true, conversations });
   } catch (error) {
     console.log(error);

@@ -14,11 +14,13 @@ import {
   sendMessage,
 } from "../../../store/features/message/messageSlice";
 import { useTheme } from "@mui/material/styles";
+import { useSocket } from "../../../hooks/useSocket";
+import { Socket } from "socket.io-client";
+// import { socket } from "../../../App";
 
-const Chat = () => {
+const Chat = ({socket}: {socket: Socket | null}) => {
   // State
   const { conversation } = useAppSelector(selectConversation);
-  const { socket } = useAppSelector(selectAuth);
   const theme = useTheme();
 
   const dispatch = useAppDispatch();
@@ -30,18 +32,18 @@ const Chat = () => {
     setMessageContent(event.target.value);
   };
 
-  const onSubmitSendMessage = (event: FormEvent<HTMLFormElement>) => {
+  const onSubmitSendMessage = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     try {
-      dispatch(
+      const message = await dispatch(
         sendMessage({
           content: messageContent,
           conversationId: conversation!._id,
         })
-      );
-      // socket!.emit("sendMessage", messageContent, conversation!._id);
-      dispatch(getConversationContent(conversation!._id));
+      ).unwrap();
+      // socket.emit("sendMessage", message);
+      socket?.emit("sendMessage", message);
       setMessageContent("");
     } catch (error) {
       console.log(error);

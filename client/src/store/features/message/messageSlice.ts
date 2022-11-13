@@ -61,7 +61,11 @@ export const getLastMessage = async (conversationId: string) => {
 export const messageSlice = createSlice({
   name: "message",
   initialState,
-  reducers: {},
+  reducers: {
+    receiveMessage: (state, action) => {
+      state.conversationContent?.push(action.payload);
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getConversationContent.pending, (state) => {
@@ -72,16 +76,20 @@ export const messageSlice = createSlice({
         state.conversationContent = action.payload.conversationContent;
       })
       .addCase(getConversationContent.rejected, (state) => {
-        state.messageLoading = false;state.conversationContent = [];
+        state.messageLoading = false;
+        state.conversationContent = [];
       })
       .addCase(sendMessage.fulfilled, (state, action) => {
         state.message = action.payload?.message;
+        state.conversationContent?.push(action.payload?.message);
       })
       .addCase(sendMessage.rejected, (state) => {
         state.message = null;
       });
   },
 });
+
+export const { receiveMessage } = messageSlice.actions;
 
 export const selectMessage = (state: RootState) => state.message;
 

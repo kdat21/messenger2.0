@@ -21,7 +21,7 @@ import { getPeople } from "../../store/features/people/peopleSlice";
 import { selectTheme, setTheme } from "../../store/features/theme/themeSlice";
 import { Dropdown, DropdownButton } from "react-bootstrap";
 
-const NavbarMenu = ({ isOpen, toggleSidebar }: ToggleSidebarProps) => {
+const NavbarMenu = ({ isOpen, toggleSidebar, socket }: ToggleSidebarProps) => {
   // State
   const { user } = useAppSelector(selectAuth);
   const { themeMode } = useAppSelector(selectTheme);
@@ -143,7 +143,9 @@ const NavbarMenu = ({ isOpen, toggleSidebar }: ToggleSidebarProps) => {
           <SNavDropdown.Divider />
           <SNavDropdown.Item
             className="text-danger"
-            onClick={() => dispatch(logoutUser())}
+            onClick={() => {
+              socket?.disconnect()
+              dispatch(logoutUser())}}
           >
             <img src={logOutIcon} alt="logOutIcon" className="me-1" />
             Log Out

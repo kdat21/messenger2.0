@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
+import io from "socket.io-client";
 import { apiUrl } from "../../../contexts/constants";
 import { AuthState } from "../../../types";
 import setAuthToken from "../../../utils/setAuthToken";
@@ -9,7 +10,7 @@ const initialState: AuthState = {
   authLoading: true,
   isAuthenticated: false,
   user: null,
-  socket: null,
+  // socket: io(`http://localhost:5000`),
 };
 
 // Reducer thunk
@@ -29,15 +30,15 @@ export const loadUser = createAsyncThunk("auth/loadUser", async () => {
         return {
           isAuthenticated: true,
           user: authResponse.data.user,
-          socket: null,
+          
         };
     } catch (error) {
       setAuthToken(null);
-      return { isAuthenticated: false, user: null, socket: null };
+      return { isAuthenticated: false, user: null };
     }
   } catch (error) {
     console.log(error);
-    return { isAuthenticated: false, user: null, socket: null };
+    return { isAuthenticated: false, user: null };
   }
 });
 
@@ -117,20 +118,20 @@ export const authSlice = createSlice({
         state.authLoading = false;
         state.isAuthenticated = action.payload!.isAuthenticated;
         state.user = action.payload!.user;
-        state.socket = null;
+        // state.socket = null;
       })
       .addCase(loadUser.rejected, (state) => {
         state.authLoading = false;
         state.isAuthenticated = false;
         state.user = null;
-        state.socket = null;
+        // state.socket = null;
       })
 
       .addCase(logoutUser.fulfilled, (state) => {
         state.authLoading = false;
         state.isAuthenticated = false;
         state.user = null;
-        state.socket = null;
+        // state.socket = null;
       })
       .addCase(logoutUser.rejected, (state) => {});
   },

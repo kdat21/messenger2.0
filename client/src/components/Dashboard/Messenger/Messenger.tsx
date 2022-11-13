@@ -1,25 +1,27 @@
 import { useEffect } from "react";
 import { Spinner } from "react-bootstrap";
-import { selectAuth } from "../../../store/features/auth/authSlice";
+import { Socket } from "socket.io-client";
+import { useSocket } from "../../../hooks/useSocket";
 import { findConversation, selectConversation } from "../../../store/features/conversation/conversationSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { SContainer } from "../../../styles/Dashboard/Messenger/Messenger";
-import { AuthStateType, ConversationStateType } from "../../../types";
 import Chat from "./Chat";
 import MessBody from "./MessBody";
 import MessHeader from "./MessHeader";
 
-const Messenger = ({ conversationId }: { conversationId: string }) => {
+const Messenger = ({socket}: {socket: Socket | null}) => {
   // State
   const  { conversationLoading, conversation } = useAppSelector(selectConversation)
-  const {socket} = useAppSelector(selectAuth)
+  // const {joinConversation, leaveConversation} = useSocket('message')
 
-  const dispatch = useAppDispatch()
-
-  useEffect(() => {
-    dispatch(findConversation(conversationId));
-    // socket!.emit('joinConversation', conversationId)
-  }, [conversationId]);
+  // useEffect(() => {
+  //     joinConversation(conversation!._id)
+      
+  //     return () => {
+  //       // socket.emit("leaveConversation", conversationId);
+  //       leaveConversation(conversation!._id)
+  //     }
+  // }, []);
 
   // Handle body
   let body = null;
@@ -34,8 +36,8 @@ const Messenger = ({ conversationId }: { conversationId: string }) => {
     body = (
       <>
         <MessHeader />
-        <MessBody />
-        <Chat />
+        <MessBody socket={socket} />
+        <Chat socket={socket} />
       </>
     );
 
