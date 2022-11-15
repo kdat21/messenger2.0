@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { ErrorHandler } from "../helpers/ErrorHandler";
 import User from "../models/User";
 
 export const userGet = async (req: Request, res: Response) => {
@@ -7,7 +8,7 @@ export const userGet = async (req: Request, res: Response) => {
     res.json({ success: true, people });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    throw new ErrorHandler(500, 'Internal server error')
   }
 };
 
@@ -18,14 +19,12 @@ export const userFind = async (req: Request, res: Response) => {
 
     // User not found
     if (!user)
-      return res
-        .status(400)
-        .json({ success: false, message: "User not found" });
+    throw new ErrorHandler(400, "User not found" );
 
     // All good
     res.json({ success: true, user });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    throw new ErrorHandler(500, 'Internal server error')
   }
 };

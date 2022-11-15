@@ -3,6 +3,7 @@ import { hash } from "argon2";
 import nodemailer from "nodemailer";
 import { v4 as uuidv4 } from "uuid";
 import UserVerification from "../models/UserVerification";
+import { ErrorHandler } from "../helpers/ErrorHandler";
 
 // nodemailer stuff
 const transporter = nodemailer.createTransport({
@@ -54,7 +55,7 @@ export const sendVerificationEmail = async (
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    throw new ErrorHandler(500, 'Internal server error')
   }
 };
 
@@ -98,6 +99,6 @@ export const sendForgotPasswordEmail = async (
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    throw new ErrorHandler(500, 'Internal server error')
   }
 };

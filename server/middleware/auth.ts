@@ -1,14 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import { JwtPayload, verify } from "jsonwebtoken";
+import { ErrorHandler } from "../helpers/ErrorHandler";
 
 const verifyToken = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.header("Authorization");
   const token = authHeader && authHeader.split(" ")[1];
 
-  if (!token)
-    return res
-      .status(401)
-      .json({ success: false, message: "Access token not found" });
+  if (!token) throw new ErrorHandler(401, "Access token not found");
 
   try {
     const decoded = verify(
@@ -20,7 +18,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
     next();
   } catch (error) {
     console.log(error);
-    return res.status(403).json({ success: false, message: "Invalid token" });
+    throw new ErrorHandler(403, "Invalid token");
   }
 };
 

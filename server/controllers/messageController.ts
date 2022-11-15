@@ -4,6 +4,7 @@ import Message from "../models/Message";
 import User from "../models/User";
 import { BSONTypeError } from "bson";
 import { Types } from "mongoose";
+import { ErrorHandler } from "../helpers/ErrorHandler";
 
 export const messageCreateConversation = async (
   req: Request,
@@ -13,25 +14,20 @@ export const messageCreateConversation = async (
 
   // Simple validation
   if (recipientEmail === "")
-    return res
-      .status(400)
-      .json({ success: false, message: "Missing recipient email" });
+    throw new ErrorHandler(400, "Missing recipient email");
 
   try {
     // Check for existing user
     const recipientUser = await User.findOne({ email: recipientEmail });
 
-    if (!recipientUser)
-      return res
-        .status(400)
-        .json({ success: false, message: "User not found" });
+    if (!recipientUser) throw new ErrorHandler(400, "User not found");
 
     // Check if recipient user is current user
     if (recipientUser._id.toString() === req.userId)
-      return res.status(400).json({
-        success: false,
-        message: "You are trying to create new conversation with yourself!",
-      });
+      throw new ErrorHandler(
+        400,
+        "You are trying to create new conversation with yourself!"
+      );
 
     //Check if the conversation existed
     const participants: Array<string> = [
@@ -45,7 +41,12 @@ export const messageCreateConversation = async (
     if (conversation)
       return res
         .status(400)
-        .json({ success: false, errorCode: 'ERR_CON_EXIST', message: "Conversation existed", conversation });
+        .json({
+          success: false,
+          errorCode: "ERR_CON_EXIST",
+          message: "Conversation existed",
+          conversation,
+        });
 
     // All good
     const newConversation = new Conversation({ participants });
@@ -58,7 +59,7 @@ export const messageCreateConversation = async (
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    throw new ErrorHandler(500, "Internal server error");
   }
 };
 
@@ -66,12 +67,12 @@ export const messageGetConversation = async (req: Request, res: Response) => {
   try {
     const conversations = await Conversation.find({
       participants: req.userId,
-    })
-      // .sort({ lastUpdate: -1 })
+    });
+    // .sort({ lastUpdate: -1 })
     res.json({ success: true, conversations });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    throw new ErrorHandler(500, "Internal server error");
   }
 };
 
@@ -87,10 +88,7 @@ export const messageGetConversationContent = async (
       new Types.ObjectId(conversationId)
     );
 
-    if (!conversation)
-      return res
-        .status(404)
-        .json({ success: false, message: "Conversation not found" });
+    if (!conversation) throw new ErrorHandler(404, "Conversation not found");
 
     // All good
     const conversationContent = await Message.find({ conversationId })
@@ -99,22 +97,15 @@ export const messageGetConversationContent = async (
     res.json({ success: true, conversation, conversationContent });
   } catch (error) {
     if (error instanceof BSONTypeError)
-      res
-        .status(404)
-        .json({ success: false, message: "Conversation not found" });
+      throw new ErrorHandler(404, "Conversation not found");
     else {
       console.log(error);
-      res
-        .status(500)
-        .json({ success: false, message: "Internal server error" });
+      throw new ErrorHandler(500, "Internal server error");
     }
   }
 };
 
-export const messageGetLastMessage = async (
-  req: Request,
-  res: Response
-) => {
+export const messageGetLastMessage = async (req: Request, res: Response) => {
   const { conversationId } = req.params;
 
   try {
@@ -123,25 +114,19 @@ export const messageGetLastMessage = async (
       new Types.ObjectId(conversationId)
     );
 
-    if (!conversation)
-      return res
-        .status(404)
-        .json({ success: false, message: "Conversation not found" });
+    if (!conversation) throw new ErrorHandler(404, "Conversation not found");
 
     // All good
-    const lastMessage = await Message.findOne({ conversationId }).sort({_id: -1})
+    const lastMessage = await Message.findOne({ conversationId })
+      .sort({ _id: -1 })
       .select("-_id -conversationId");
     res.json({ success: true, lastMessage });
   } catch (error) {
     if (error instanceof BSONTypeError)
-      res
-        .status(404)
-        .json({ success: false, message: "Conversation not found" });
+      throw new ErrorHandler(404, "Conversation not found");
     else {
       console.log(error);
-      res
-        .status(500)
-        .json({ success: false, message: "Internal server error" });
+      throw new ErrorHandler(500, "Internal server error");
     }
   }
 };
@@ -156,16 +141,11 @@ export const messageSendMessage = async (req: Request, res: Response) => {
       new Types.ObjectId(conversationId)
     );
 
-    if (!conversation)
-      return res
-        .status(404)
-        .json({ success: false, message: "Conversation not found" });
+    if (!conversation) throw new ErrorHandler(404, "Conversation not found");
 
     // Simple validation
     if (content === "")
-      return res
-        .status(400)
-        .json({ success: false, message: "Missing content of message" });
+      throw new ErrorHandler(400, "Missing content of message");
 
     // All good
 
@@ -180,14 +160,10 @@ export const messageSendMessage = async (req: Request, res: Response) => {
     res.json({ success: true, message: newMessage });
   } catch (error) {
     if (error instanceof BSONTypeError)
-      res
-        .status(404)
-        .json({ success: false, message: "Conversation not found" });
+      throw new ErrorHandler(404, "Conversation not found");
     else {
       console.log(error);
-      res
-        .status(500)
-        .json({ success: false, message: "Internal server error" });
+      throw new ErrorHandler(500, "Internal server error");
     }
   }
 };
