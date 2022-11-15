@@ -16,7 +16,7 @@ import { useSocket } from "../../hooks/useSocket";
 const Dashboard = ({ dashboardRoute }: { dashboardRoute: string }) => {
   // State
   // const { socket } = useAppSelector(selectAuth);
-  const {socket} = useSocket('message')
+  const socket = useSocket('message')
 
   const dispatch = useAppDispatch();
 
