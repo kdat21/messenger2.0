@@ -8,7 +8,7 @@ import authRouter from "./routes/auth";
 import messageRouter from "./routes/message";
 import userRouter from "./routes/user";
 import { ErrorHandler, handleError } from "./helpers/ErrorHandler";
-import { MessageSocket } from "./socket/socket";
+import { MessageSocket } from "./socket/messageSocket";
 
 connectDB();
 
