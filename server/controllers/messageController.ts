@@ -4,19 +4,16 @@ import Message from "../models/Message";
 import User from "../models/User";
 import { BSONTypeError } from "bson";
 import { Types } from "mongoose";
-import { ErrorHandler } from "../helpers/ErrorHandler";
+import { ErrorHandler, wrapAsync } from "../helpers/ErrorHandler";
 
-export const messageCreateConversation = async (
-  req: Request,
-  res: Response
-) => {
-  const { recipientEmail } = req.body;
+export const messageCreateConversation = wrapAsync(
+  async (req: Request, res: Response) => {
+    const { recipientEmail } = req.body;
 
-  // Simple validation
-  if (recipientEmail === "")
-    throw new ErrorHandler(400, "Missing recipient email");
+    // Simple validation
+    if (recipientEmail === "")
+      throw new ErrorHandler(400, "Missing recipient email");
 
-  try {
     // Check for existing user
     const recipientUser = await User.findOne({ email: recipientEmail });
 
@@ -39,14 +36,12 @@ export const messageCreateConversation = async (
       participants: { $all: participants },
     });
     if (conversation)
-      return res
-        .status(400)
-        .json({
-          success: false,
-          errorCode: "ERR_CON_EXIST",
-          message: "Conversation existed",
-          conversation,
-        });
+      return res.status(400).json({
+        success: false,
+        errorCode: "ERR_CON_EXIST",
+        message: "Conversation existed",
+        conversation,
+      });
 
     // All good
     const newConversation = new Conversation({ participants });
@@ -57,32 +52,25 @@ export const messageCreateConversation = async (
       message: "Have nice chat!",
       conversation: newConversation,
     });
-  } catch (error) {
-    console.log(error);
-    throw new ErrorHandler(500, "Internal server error");
   }
-};
+);
 
-export const messageGetConversation = async (req: Request, res: Response) => {
-  try {
+export const messageGetConversation = wrapAsync(
+  async (req: Request, res: Response) => {
     const conversations = await Conversation.find({
       participants: req.userId,
     });
     // .sort({ lastUpdate: -1 })
     res.json({ success: true, conversations });
-  } catch (error) {
-    console.log(error);
+
     throw new ErrorHandler(500, "Internal server error");
   }
-};
+);
 
-export const messageGetConversationContent = async (
-  req: Request,
-  res: Response
-) => {
-  const { conversationId } = req.params;
+export const messageGetConversationContent = wrapAsync(
+  async (req: Request, res: Response) => {
+    const { conversationId } = req.params;
 
-  try {
     // Check if conversation exist
     const conversation = await Conversation.findById(
       new Types.ObjectId(conversationId)
@@ -95,20 +83,13 @@ export const messageGetConversationContent = async (
       .sort({ lastUpdate: -1 })
       .select("-_id -conversationId");
     res.json({ success: true, conversation, conversationContent });
-  } catch (error) {
-    if (error instanceof BSONTypeError)
-      throw new ErrorHandler(404, "Conversation not found");
-    else {
-      console.log(error);
-      throw new ErrorHandler(500, "Internal server error");
-    }
   }
-};
+);
 
-export const messageGetLastMessage = async (req: Request, res: Response) => {
-  const { conversationId } = req.params;
+export const messageGetLastMessage = wrapAsync(
+  async (req: Request, res: Response) => {
+    const { conversationId } = req.params;
 
-  try {
     // Check if conversation exist
     const conversation = await Conversation.findById(
       new Types.ObjectId(conversationId)
@@ -121,21 +102,14 @@ export const messageGetLastMessage = async (req: Request, res: Response) => {
       .sort({ _id: -1 })
       .select("-_id -conversationId");
     res.json({ success: true, lastMessage });
-  } catch (error) {
-    if (error instanceof BSONTypeError)
-      throw new ErrorHandler(404, "Conversation not found");
-    else {
-      console.log(error);
-      throw new ErrorHandler(500, "Internal server error");
-    }
   }
-};
+);
 
-export const messageSendMessage = async (req: Request, res: Response) => {
-  const { conversationId } = req.params;
-  const { content } = req.body;
+export const messageSendMessage = wrapAsync(
+  async (req: Request, res: Response) => {
+    const { conversationId } = req.params;
+    const { content } = req.body;
 
-  try {
     // Check if conversation exist
     const conversation = await Conversation.findById(
       new Types.ObjectId(conversationId)
@@ -158,12 +132,5 @@ export const messageSendMessage = async (req: Request, res: Response) => {
     await conversation.updateOne({ lastUpdate: newMessage.sentAt });
 
     res.json({ success: true, message: newMessage });
-  } catch (error) {
-    if (error instanceof BSONTypeError)
-      throw new ErrorHandler(404, "Conversation not found");
-    else {
-      console.log(error);
-      throw new ErrorHandler(500, "Internal server error");
-    }
   }
-};
+);

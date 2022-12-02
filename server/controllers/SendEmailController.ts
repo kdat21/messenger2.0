@@ -35,8 +35,6 @@ export const sendVerificationEmail = async (
              <p>This link <b>expires in 6 hours</b>.</p>
              <p>Press <a href=${currentUrl}/verify/${_id}/${uniqueString}>here</a> to proceed.</p>`,
   };
-
-  try {
     // Save UserVerification collection
     const hashUniqueString = await hash(uniqueString);
     const newVerification = new UserVerification({
@@ -53,10 +51,6 @@ export const sendVerificationEmail = async (
       success: true,
       message: "User created successfully, waiting for being verified...",
     });
-  } catch (error) {
-    console.log(error);
-    throw new ErrorHandler(500, 'Internal server error')
-  }
 };
 
 export const sendForgotPasswordEmail = async (
@@ -68,7 +62,6 @@ export const sendForgotPasswordEmail = async (
 
   const uniqueString = uuidv4() + _id;
 
-  try {
     // Delete all password reset request
     await UserVerification.deleteMany({ userId: _id });
 
@@ -97,8 +90,4 @@ export const sendForgotPasswordEmail = async (
       success: true,
       message: "Reset password mail sent",
     });
-  } catch (error) {
-    console.log(error);
-    throw new ErrorHandler(500, 'Internal server error')
-  }
 };

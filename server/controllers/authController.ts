@@ -8,39 +8,26 @@ import {
   sendForgotPasswordEmail,
   sendVerificationEmail,
 } from "./SendEmailController";
-import { ErrorHandler } from "../helpers/ErrorHandler";
+import { ErrorHandler, wrapAsync } from "../helpers/ErrorHandler";
 
 export const authCookies = (req: Request, res: Response) => {
-  try {
-    res.json({ success: true, token: req.cookies.mess_clone });
-  } catch (error) {
-    console.log(error);
-    throw new ErrorHandler(500, "Internal server error");
-  }
+  res.json({ success: true, token: req.cookies.mess_clone });
 };
 
 export const authDeleteCookies = (req: Request, res: Response) => {
-  try {
-    res.clearCookie("mess_clone").json({ success: true });
-  } catch (error) {
-    console.log(error);
-    throw new ErrorHandler(500, "Internal server error");
-  }
+  res.clearCookie("mess_clone").json({ success: true });
 };
 
-export const authAuthenticate = async (req: Request, res: Response) => {
-  try {
+export const authAuthenticate = wrapAsync(
+  async (req: Request, res: Response) => {
     const user = await User.findById(req.userId).select("-password -verified");
     if (!user) throw new ErrorHandler(400, "User not found");
 
     res.json({ success: true, user });
-  } catch (error) {
-    console.log(error);
-    throw new ErrorHandler(500, "Internal server error");
   }
-};
+);
 
-export const authRegister = async (req: Request, res: Response) => {
+export const authRegister = wrapAsync(async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
 
   // Simple validation
@@ -57,114 +44,100 @@ export const authRegister = async (req: Request, res: Response) => {
   )
     throw new ErrorHandler(400, "Password is too weak");
 
-  try {
-    // Check for existing users
-    const user = await User.findOne({ email });
+  // Check for existing users
+  const user = await User.findOne({ email });
 
-    if (user) throw new ErrorHandler(400, "Email has already registered");
+  if (user) throw new ErrorHandler(400, "Email has already registered");
 
-    // All good
-    const hashedPassword = await hash(password);
-    const newUser = new User({ username, email, password: hashedPassword });
-    await newUser.save();
+  // All good
+  const hashedPassword = await hash(password);
+  const newUser = new User({ username, email, password: hashedPassword });
+  await newUser.save();
 
-    sendVerificationEmail(
-      { _id: newUser._id.toString(), email: newUser.email },
-      res
-    );
-  } catch (error) {
-    console.log(error);
-    throw new ErrorHandler(500, "Internal server error");
-  }
-};
+  await sendVerificationEmail(
+    { _id: newUser._id.toString(), email: newUser.email },
+    res
+  );
 
-export const authVerify = async (req: Request, res: Response) => {
+  
+});
+
+export const authVerify = wrapAsync(async (req: Request, res: Response) => {
   const { userId, uniqueString } = req.params;
 
-  try {
-    // Checking for exist account record
-    const userVerification = await UserVerification.findOne({ userId });
+  // Checking for exist account record
+  const userVerification = await UserVerification.findOne({ userId });
 
-    if (!userVerification) {
-      throw new ErrorHandler(
-        400,
-        "Account record doesn't exist or has been verified already!"
-      );
-    }
-
-    // Check if expired
-    const { expireAt } = userVerification;
-
-    if (expireAt.getTime() < Date.now()) {
-      await UserVerification.findOneAndDelete({ userId });
-      await User.findByIdAndDelete({ userId });
-      throw new ErrorHandler(400, "Link has expired");
-    }
-
-    // Valid record exists
-    const validUniqueString = await verify(
-      userVerification.uniqueString,
-      uniqueString
+  if (!userVerification) {
+    throw new ErrorHandler(
+      400,
+      "Account record doesn't exist or has been verified already!"
     );
-    if (!validUniqueString)
-      throw new ErrorHandler(400, "Invalid verification details passed");
-
-    // All good
-    await User.findByIdAndUpdate(userId, { verified: true });
-    await UserVerification.findOneAndDelete({ userId });
-
-    // Return token
-    const accessToken = sign({ userId }, process.env.ACCESS_TOKEN_SECRET!);
-
-    res
-      .cookie("mess_clone", accessToken, {
-        httpOnly: true,
-        path: "/",
-        sameSite: "strict",
-      })
-      .json({
-        success: true,
-        message: "User verified successfully",
-        accessToken,
-      });
-  } catch (error) {
-    console.log(error);
-    throw new ErrorHandler(500, "Internal server error");
   }
-};
 
-export const authIdentify = async (req: Request, res: Response) => {
+  // Check if expired
+  const { expireAt } = userVerification;
+
+  if (expireAt.getTime() < Date.now()) {
+    await UserVerification.findOneAndDelete({ userId });
+    await User.findByIdAndDelete({ userId });
+    throw new ErrorHandler(400, "Link has expired");
+  }
+
+  // Valid record exists
+  const validUniqueString = await verify(
+    userVerification.uniqueString,
+    uniqueString
+  );
+  if (!validUniqueString)
+    throw new ErrorHandler(400, "Invalid verification details passed");
+
+  // All good
+  await User.findByIdAndUpdate(userId, { verified: true });
+  await UserVerification.findOneAndDelete({ userId });
+
+  // Return token
+  const accessToken = sign({ userId }, process.env.ACCESS_TOKEN_SECRET!);
+
+  res
+    .cookie("mess_clone", accessToken, {
+      httpOnly: true,
+      path: "/",
+      sameSite: "strict",
+    })
+    .json({
+      success: true,
+      message: "User verified successfully",
+      accessToken,
+    });
+
+  
+});
+
+export const authIdentify = wrapAsync(async (req: Request, res: Response) => {
   const { email } = req.body;
 
   // Simple validation
   if (email == "") throw new ErrorHandler(400, "Empty input fields");
 
-  try {
-    // Check for exist user
-    const user = await User.findOne({ email });
+  // Check for exist user
+  const user = await User.findOne({ email });
 
-    if (!user) throw new ErrorHandler(400, "Email not found");
+  if (!user) throw new ErrorHandler(400, "Email not found");
 
-    // Check if verified yet
-    if (!user.verified)
-      throw new ErrorHandler(400, "Account has not been verified yet");
+  // Check if verified yet
+  if (!user.verified)
+    throw new ErrorHandler(400, "Account has not been verified yet");
 
-    // All good
-    sendForgotPasswordEmail(
-      { _id: user._id.toString(), email: user.email },
-      res
-    );
-  } catch (error) {
-    console.log(error);
-    throw new ErrorHandler(500, "Internal server error");
-  }
-};
+  // All good
+  sendForgotPasswordEmail({ _id: user._id.toString(), email: user.email }, res);
+});
 
-export const authForgotPassword = async (req: Request, res: Response) => {
-  const { userId, uniqueString } = req.params;
-  const { newPassword } = req.body;
+export const authForgotPassword = wrapAsync(
+  async (req: Request, res: Response) => {
+    const { userId, uniqueString } = req.params;
+    const { newPassword } = req.body;
 
-  try {
     // Checking for exist account record
     const userVerification = await UserVerification.findOne({ userId });
 
@@ -214,54 +187,48 @@ export const authForgotPassword = async (req: Request, res: Response) => {
       message: "User reset password successfully",
       accessToken,
     });
-  } catch (error) {
-    console.log(error);
-    throw new ErrorHandler(500, "Internal server error");
   }
-};
+);
 
-export const authLogin = async (req: Request, res: Response) => {
+export const authLogin = wrapAsync(async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   // Simple validation
   if (email == "" || password == "")
     throw new ErrorHandler(400, "Empty input fields");
 
-  try {
-    // Check for exist user
-    const user = await User.findOne({ email });
+  // Check for exist user
+  const user = await User.findOne({ email });
 
-    if (!user) throw new ErrorHandler(400, "Email not found");
+  if (!user) throw new ErrorHandler(400, "Email not found");
 
-    // Check password
-    const validPassword = await verify(user.password, password);
+  // Check password
+  const validPassword = await verify(user.password, password);
 
-    if (!validPassword) throw new ErrorHandler(400, "Incorrect password");
+  if (!validPassword) throw new ErrorHandler(400, "Incorrect password");
 
-    // Check if verified yet
-    if (!user.verified)
-      throw new ErrorHandler(400, "Account has not been verified yet");
+  // Check if verified yet
+  if (!user.verified)
+    throw new ErrorHandler(400, "Account has not been verified yet");
 
-    // All good
-    // Return token
-    const accessToken = sign(
-      { userId: user._id },
-      process.env.ACCESS_TOKEN_SECRET!
-    );
+  // All good
+  // Return token
+  const accessToken = sign(
+    { userId: user._id },
+    process.env.ACCESS_TOKEN_SECRET!
+  );
 
-    res
-      .cookie("mess_clone", accessToken, {
-        httpOnly: true,
-        path: "/",
-        sameSite: "strict",
-      })
-      .json({
-        success: true,
-        message: "User logged in successfully",
-        accessToken,
-      });
-  } catch (error) {
-    console.log(error);
-    throw new ErrorHandler(500, "Internal server error");
-  }
-};
+  res
+    .cookie("mess_clone", accessToken, {
+      httpOnly: true,
+      path: "/",
+      sameSite: "strict",
+    })
+    .json({
+      success: true,
+      message: "User logged in successfully",
+      accessToken,
+    });
+
+  
+});
